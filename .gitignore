@@ -1,4 +1,12 @@
-# Python caches
+# Intermediate and report generation files
+plots/
+temp_plots/
+code_screenshots/
+build_report.py
+*.docx
+~$*.docx
+
+# Python cache
 __pycache__/
 *.py[cod]
 *$py.class
@@ -10,7 +18,4 @@ venv/
 # Temporary files
 *.tmp
 *.log
-code_screenshots/
-
-# Unorganized raw tasks folder
 tasks/
