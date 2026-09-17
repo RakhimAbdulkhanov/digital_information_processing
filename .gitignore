@@ -1,0 +1,16 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.ipynb_checkpoints/
+.venv/
+env/
+venv/
+
+# Temporary files
+*.tmp
+*.log
+code_screenshots/
+
+# Unorganized raw tasks folder
+tasks/
