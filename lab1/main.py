@@ -55,6 +55,21 @@ ax2.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig(os.path.join(plots_dir, "1_rect_and_sinc.png"), dpi=200)
 plt.close()
+
+# окремий детальний графік sinc функції з додатка методички
+plt.figure(figsize=(8.5, 4.8))
+plt.plot(f_rect, y_sinc, color="#d62728", linewidth=2)
+plt.title("Sinc функція - перетворення Фур'є прямокутного сигналу")
+plt.xlabel("Частота f (Гц)")
+plt.ylabel("Амплітуда")
+plt.text(0, 0.8, f"sinc(f) = sin(pi*{tau}*f) / (pi*{tau}*f)",
+         fontsize=11, ha="center", bbox=dict(boxstyle="round,pad=0.4", facecolor="white", alpha=0.9, edgecolor="#cccccc"))
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.xlim(-4, 4)
+plt.tight_layout()
+plt.savefig(os.path.join(plots_dir, "1b_sinc_detailed.png"), dpi=200)
+plt.close()
+
 print("- Перші нулі спектра: f = +-1.0 Гц (обернено пропорційно тривалості tau)")
 
 # -------------------------------------------------------------

@@ -85,6 +85,7 @@ steps = [
     ("text", "2. Реалізація прямокутного сигналу rect(t) та його аналітичного спектра sinc(f):"),
     ("code_screenshot", code_chunk_1),
     ("image", os.path.join(plots_dir, "1_rect_and_sinc.png")),
+    ("image", os.path.join(plots_dir, "1b_sinc_detailed.png")),
 
     ("text", "3. Моделювання гармонічного сигналу cos(2*pi*f0*t) та спектральних дельта-піків:"),
     ("code_screenshot", code_chunk_2),
