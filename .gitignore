@@ -4,6 +4,7 @@ temp_plots/
 code_screenshots/
 build_report.py
 *.docx
+!**/task/*.docx
 ~$*.docx
 
 # Python cache
