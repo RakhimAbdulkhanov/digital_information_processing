@@ -35,7 +35,7 @@ plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.show()
 
-# окремий графік sinc з анотацією
+# окремий детальний графік sinc
 plt.figure(figsize=(8.5, 4.8))
 plt.plot(f_rect, y_sinc, color="#d62728", linewidth=2)
 plt.title("Sinc функція - спектр прямокутного імпульсу")
@@ -49,17 +49,14 @@ plt.tight_layout()
 plt.show()
 
 # -------------------------------------------------------------
-# 2. гармонічний сигнал (косинус)
+# 2. гармонічний сигнал (косинус) та дельта-піки спектра
 # -------------------------------------------------------------
 f0 = 2.0
 t_cos = np.linspace(-2.0, 2.0, 1000)
 y_cos = np.cos(2 * np.pi * f0 * t_cos)
 
-# спектр через швидке перетворення фур'є
-n_fft = 2048
-y_cos_long = np.cos(2 * np.pi * f0 * np.linspace(0, 10, n_fft))
-spectrum_cos = np.abs(np.fft.fftshift(np.fft.fft(y_cos_long))) / n_fft
-freq_cos = np.fft.fftshift(np.fft.fftfreq(n_fft, d=10 / n_fft))
+f_cos = np.linspace(-6.0, 6.0, 1000)
+spec_cos_base = np.zeros_like(f_cos)
 
 plt.figure(figsize=(11, 4.2))
 plt.subplot(1, 2, 1)
@@ -70,32 +67,43 @@ plt.ylabel("Амплітуда")
 plt.grid(True, linestyle="--", alpha=0.6)
 
 plt.subplot(1, 2, 2)
-mask = np.abs(freq_cos) <= 6.0
-plt.plot(freq_cos[mask], spectrum_cos[mask], color="#d62728", linewidth=2)
-plt.title("Спектр: піки на частотах +- f0")
+plt.plot(f_cos, spec_cos_base, color="#d62728", linewidth=1.5)
+# чисті дельта-піки без числового розмиття
+plt.vlines([-f0, f0], ymin=0, ymax=0.5, color="#d62728", linewidth=2.5)
+plt.annotate("", xy=(-f0, 0.5), xytext=(-f0, 0),
+             arrowprops=dict(arrowstyle="->", color="#d62728", lw=2.5, mutation_scale=15))
+plt.annotate("", xy=(f0, 0.5), xytext=(f0, 0),
+             arrowprops=dict(arrowstyle="->", color="#d62728", lw=2.5, mutation_scale=15))
+plt.scatter([-f0, f0], [0.5, 0.5], color="#d62728", s=30, zorder=5)
+plt.title("Спектр: дельта-піки на частотах +- f0")
 plt.xlabel("Частота f (Гц)")
 plt.ylabel("Амплітуда")
+plt.ylim(-0.05, 0.65)
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.show()
 
 # -------------------------------------------------------------
-# 3. дельта-функція дірака
+# 3. дельта-функція дірака та рівномірний спектр
 # -------------------------------------------------------------
 t_delta = np.linspace(-1.0, 1.0, 1000)
-# апроксимація гаусовим куполом
-sigma = 0.015
-y_delta = (1.0 / (sigma * np.sqrt(2 * np.pi))) * np.exp(-0.5 * (t_delta / sigma)**2)
+y_delta_base = np.zeros_like(t_delta)
 
 f_delta = np.linspace(-20.0, 20.0, 1000)
 spectrum_delta = np.ones_like(f_delta)
 
 plt.figure(figsize=(11, 4.2))
 plt.subplot(1, 2, 1)
-plt.plot(t_delta, y_delta, color="#1f77b4", linewidth=2)
+plt.plot(t_delta, y_delta_base, color="#1f77b4", linewidth=1.5)
+# ідеальний дельта-імпульс у точці 0
+plt.vlines(0, ymin=0, ymax=1.0, color="#1f77b4", linewidth=2.5)
+plt.annotate("", xy=(0, 1.0), xytext=(0, 0),
+             arrowprops=dict(arrowstyle="->", color="#1f77b4", lw=2.5, mutation_scale=15))
+plt.scatter([0], [1.0], color="#1f77b4", s=30, zorder=5)
 plt.title("Дельта-імпульс delta(t)")
 plt.xlabel("Час t (с)")
 plt.ylabel("Амплітуда")
+plt.ylim(-0.1, 1.25)
 plt.grid(True, linestyle="--", alpha=0.6)
 
 plt.subplot(1, 2, 2)
@@ -114,8 +122,14 @@ plt.show()
 t_sgn = np.linspace(-3.0, 3.0, 1000)
 y_sgn = np.sign(t_sgn)
 
-f_sgn = np.linspace(0.1, 5.0, 500)
-mag_sgn = 1.0 / (np.pi * f_sgn)
+f_sgn_neg = np.linspace(-4.0, -0.06, 500)
+f_sgn_pos = np.linspace(0.06, 4.0, 500)
+
+im_sgn_neg = -1.0 / (np.pi * f_sgn_neg)
+im_sgn_pos = -1.0 / (np.pi * f_sgn_pos)
+
+mag_sgn_neg = 1.0 / (np.pi * np.abs(f_sgn_neg))
+mag_sgn_pos = 1.0 / (np.pi * np.abs(f_sgn_pos))
 
 plt.figure(figsize=(11, 4.2))
 plt.subplot(1, 2, 1)
@@ -127,10 +141,18 @@ plt.ylim(-1.4, 1.4)
 plt.grid(True, linestyle="--", alpha=0.6)
 
 plt.subplot(1, 2, 2)
-plt.plot(f_sgn, mag_sgn, color="#d62728", linewidth=2)
-plt.title("Модуль спектра: |F| = 1 / (pi * f)")
+# уявна частина згідно з рис. 14 завдання та модуль спектра
+plt.plot(f_sgn_neg, im_sgn_neg, color="#d62728", linestyle="--", linewidth=2, label="Im(F) = -1/(pi*f)")
+plt.plot(f_sgn_pos, im_sgn_pos, color="#d62728", linestyle="--", linewidth=2)
+plt.plot(f_sgn_neg, mag_sgn_neg, color="#ff7f0e", linewidth=1.8, label="|F| = 1/(pi*|f|)")
+plt.plot(f_sgn_pos, mag_sgn_pos, color="#ff7f0e", linewidth=1.8)
+plt.axhline(0, color="gray", linestyle=":", alpha=0.5)
+plt.axvline(0, color="gray", linestyle=":", alpha=0.5)
+plt.title("Спектр: F{sgn(t)} = 1 / (j*pi*f)")
 plt.xlabel("Частота f (Гц)")
 plt.ylabel("Амплітуда")
+plt.ylim(-3.5, 3.5)
+plt.legend(loc="upper right", framealpha=0.9)
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.show()
